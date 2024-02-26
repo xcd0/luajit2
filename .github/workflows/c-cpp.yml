@@ -12,6 +12,7 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
 
+      - name: build
       - run: |
           msbuild -version
           choco install -y --no-progress busybox 7zip
