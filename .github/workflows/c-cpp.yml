@@ -36,29 +36,19 @@ jobs:
         busybox echo "-------------------------------------"
 
 
-
-    - name: Create release
-      uses: actions/create-release@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-      run: |
-        ${{ matrix.asset_name }} = ('build_dynamic_mt.7z', 'build_static_mt.7z', 'build_dynamic_md.7z', 'build_static_md.7z')
-        foreach ($asset in $asset_names) {
-          echo "Uploading $asset"
-          with:
-            asset_path: $asset
-            asset_name: $asset
-            asset_content_type: application/x-7z-compressed
-        }
+  upload-assets:
+    needs: build
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        asset: ['build_dynamic_mt.7z', 'build_static_mt.7z', 'build_dynamic_md.7z', 'build_static_md.7z']
+    steps:
+      - name: Upload Release Asset ${{ matrix.asset }}
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.build.outputs.upload_url }} # この行は前のジョブの出力を正しく参照していることを確認してください。
+          asset_path: ${{ matrix.asset }}
+          asset_name: ${{ matrix.asset }}
+          asset_content_type: application/x-7z-compressed
