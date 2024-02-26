@@ -19,7 +19,7 @@ jobs:
       run: |
         where msbuild
       #shell: bash
-      run: |
+      #run: |
         msbuild -version
         choco install -y --no-progress 7zip
         busybox
