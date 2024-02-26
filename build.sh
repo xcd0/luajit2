@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd "$(dirname "$0")"
+pwd
 rm -rf build_*
 mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
 
