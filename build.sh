@@ -1,23 +1,30 @@
 #!/bin/bash
 
+link_opt=$1 # dynamic or static
+mt_opt=$2 #  md or mt
+
+opt=""
+
+if [ "$link_opt" == "static" ]; then
+  opt="static"
+  link_opt="static"
+else
+  link_opt="dynamic"
+fi
+if [ "$mt_opt" == "md" ]; then
+  sed -i "s;/MT;/MD;g" src/msvcbuild.bat
+else
+  mt_opt="mt"
+fi
+
 cd "$(dirname "$0")"
 pwd
 rm -rf build_*
-mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
+mkdir -p build_${link_opt}_${mt_opt}
 
 cd src
-cmd.exe /c msvcbuild.bat
-cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_mt
-call msvcbuild.bat static
-cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_mt
-sed -i "s;/MT;/MD;g" msvcbuild.bat
-call msvcbuild.bat
-cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_md
-call msvcbuild.bat static
-cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_md
-cd ..
 
-7z a build_dynamic_mt.7z build_dynamic_mt/*
-7z a build_static_mt.7z  build_static_mt/*
-7z a build_dynamic_md.7z build_dynamic_md/*
-7z a build_static_md.7z  build_static_md/*
+cmd.exe /c msvcbuild.bat $opt
+cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_${link_opt}_${mt_opt}
+cd ..
+z a build_${link_opt}_${mt_opt}.7z build_${link_opt}_${mt_opt}/*
