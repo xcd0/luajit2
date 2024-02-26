@@ -1,10 +1,6 @@
 name: MSBuild
 on: [push]
 run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
-defaults:
-    run:
-        shell: cmd
-
 jobs:
     build:
         runs-on: windows-2019
