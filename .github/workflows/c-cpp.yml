@@ -2,18 +2,18 @@ name: MSBuild
 on: [push]
 run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
 jobs:
-  build:
-    runs-on: windows-2019
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
-      - name: build
-        run: |
-          msbuild -version
-          choco install -y --no-progress busybox 7zip
-          busybox
-          busybox date '+%Y.%m.%d.%H.%M.%S'
-          busybox uname -a
-          busybox pwd
+	build:
+		runs-on: windows-2019
+		steps:
+			- name: Checkout
+				uses: actions/checkout@v2
+			- name: Add msbuild to PATH
+				uses: microsoft/setup-msbuild@v1.0.2
+			- name: build
+				run: |
+					msbuild -version
+					choco install -y --no-progress busybox 7zip
+					busybox
+					busybox date '+%Y.%m.%d.%H.%M.%S'
+					busybox uname -a
+					busybox pwd
