@@ -5,7 +5,7 @@ defaults:
     run:
         shell: cmd
         #echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "%GITHUB_ENV%"
-        echo "$GITHUB_ENV"
+        echo "%GITHUB_ENV%"
 
 jobs:
     build:
