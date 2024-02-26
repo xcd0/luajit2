@@ -45,12 +45,9 @@ jobs:
   create-release:
     needs: build
     runs-on: windows-2019
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }} # 出力を設定
     steps:
-    - name: check
-      shell: cmd
-      run: |
-        choco install -y --no-progress busybox
-        busybox ls
     - name: Archive production artifacts
       id: create_release
       uses: actions/upload-artifact@v4
@@ -61,9 +58,14 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
-        name: dist-without-markdown
+        name: archive_artifacts
         path: |
           build_*.7z
+    - name: check
+      shell: cmd
+      run: |
+        choco install -y --no-progress busybox
+        busybox ls
 
   upload-assets:
     needs: create-release
