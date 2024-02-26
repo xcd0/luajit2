@@ -1,7 +1,6 @@
 
 name: MSBuild
 on: [push]
-run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
 jobs:
   build:
     runs-on: windows-2019
@@ -24,9 +23,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
       with:
         vs-version: '[16.11,16.12)'
-        vs-prerelease: false
+        #vs-prerelease: false
         #msbuild-architecture: x64
-    - shell: cmd
+    - name: Setup and Build
+      shell: cmd
       run: |
         # setup-msbuild でもダメだったので直接呼ぶ
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsx86_amd64.bat"
