@@ -2,101 +2,101 @@ name: MSBuild
 on: [push]
 run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
 defaults:
-	run:
-		shell: cmd
-		echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
-		echo "$GITHUB_ENV"
+    run:
+        shell: cmd
+        echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
+        echo "$GITHUB_ENV"
 
 jobs:
-	build:
-		runs-on: windows-2019
-		steps:
-			- name: Checkout
-			uses: actions/checkout@v2
-			with:
-				fetch-depth: 0
-			- name: setup-msbuild
-			- run: git fetch --force --tags
-			with:
-				# Version of Visual Studio to search; defaults to latest if not specified
-				vs-version: '[16.11,16.12)' # optional
-				# Enable searching for pre-release versions of Visual Studio/MSBuild
-				vs-prerelease: false # optional
-				# The preferred processor architecture of MSBuild. Can be either "x86", "x64", or "arm64". "x64" is only available from Visual Studio version 17.0 and later.
-				msbuild-architecture: x64
-			- run:
-				choco install -y --no-progress busybox 7zip
-				busybox
-				busybox date '+%Y.%m.%d.%H.%M.%S'
-				busybox uname -a
-				busybox pwd
-				msbuild -version
-				git submodule init
-				git submodule update --init --recursive
-				busybox rm -rf build*
-				busybox mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
-				busybox cd build/src
-				call msvcbuild.bat
-				busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_mt
-				call msvcbuild.bat static
-				busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_mt
-				busybox sed -i "s;/MT;/MD;g" msvcbuild.bat
-				call msvcbuild.bat
-				busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_md
-				call msvcbuild.bat static
-				busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_md
-				busybox cd ..
-				7z a build_dynamic_mt.7z build_dynamic_mt/*
-				7z a build_static_mt.7z  build_static_mt/*
-				7z a build_dynamic_md.7z build_dynamic_md/*
-				7z a build_static_md.7z  build_static_md/*
-			- name: Create release
-				id: create_release
-				uses: actions/create-release@v1.0.0
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-				with:
-					tag_name: ${{ github.ref }}
-					release_name: Release ${{ github.ref }}
-					draft: false
-					prerelease: false
-			- name: Upload Release Asset build_dynamic_mt
-				id: upload-release-asset
-				uses: actions/upload-release-asset@v1.0.1
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-				with:
-					upload_url: ${{ steps.create_release.outputs.upload_url }}
-					asset_path: build_dynamic_mt.7z
-					asset_name: build_dynamic_mt.7z
-					asset_content_type: application/x-7z-compressed
-			- name: Upload Release Asset build_static_mt
-				id: upload-release-asset
-				uses: actions/upload-release-asset@v1.0.1
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-				with:
-					upload_url: ${{ steps.create_release.outputs.upload_url }}
-					asset_path: build_static_mt.7z
-					asset_name: build_static_mt.7z
-					asset_content_type: application/x-7z-compressed
-			- name: Upload Release Asset build_static_mt
-				id: upload-release-asset
-				uses: actions/upload-release-asset@v1.0.1
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-				with:
-					upload_url: ${{ steps.create_release.outputs.upload_url }}
-					asset_path: build_static_mt.7z
-					asset_name: build_static_mt.7z
-					asset_content_type: application/x-7z-compressed
-			- name: Upload Release Asset build_static_md
-				id: upload-release-asset
-				uses: actions/upload-release-asset@v1.0.1
-				env:
-					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-				with:
-					upload_url: ${{ steps.create_release.outputs.upload_url }}
-					asset_path: build_static_md.7z
-					asset_name: build_static_md.7z
-					asset_content_type: application/x-7z-compressed
+    build:
+        runs-on: windows-2019
+        steps:
+            - name: Checkout
+            uses: actions/checkout@v2
+            with:
+                fetch-depth: 0
+            - name: setup-msbuild
+            - run: git fetch --force --tags
+            with:
+                # Version of Visual Studio to search; defaults to latest if not specified
+                vs-version: '[16.11,16.12)' # optional
+                # Enable searching for pre-release versions of Visual Studio/MSBuild
+                vs-prerelease: false # optional
+                # The preferred processor architecture of MSBuild. Can be either "x86", "x64", or "arm64". "x64" is only available from Visual Studio version 17.0 and later.
+                msbuild-architecture: x64
+            - run:
+                choco install -y --no-progress busybox 7zip
+                busybox
+                busybox date '+%Y.%m.%d.%H.%M.%S'
+                busybox uname -a
+                busybox pwd
+                msbuild -version
+                git submodule init
+                git submodule update --init --recursive
+                busybox rm -rf build*
+                busybox mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
+                busybox cd build/src
+                call msvcbuild.bat
+                busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_mt
+                call msvcbuild.bat static
+                busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_mt
+                busybox sed -i "s;/MT;/MD;g" msvcbuild.bat
+                call msvcbuild.bat
+                busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_md
+                call msvcbuild.bat static
+                busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_md
+                busybox cd ..
+                7z a build_dynamic_mt.7z build_dynamic_mt/*
+                7z a build_static_mt.7z  build_static_mt/*
+                7z a build_dynamic_md.7z build_dynamic_md/*
+                7z a build_static_md.7z  build_static_md/*
+            - name: Create release
+                id: create_release
+                uses: actions/create-release@v1.0.0
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    tag_name: ${{ github.ref }}
+                    release_name: Release ${{ github.ref }}
+                    draft: false
+                    prerelease: false
+            - name: Upload Release Asset build_dynamic_mt
+                id: upload-release-asset
+                uses: actions/upload-release-asset@v1.0.1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    upload_url: ${{ steps.create_release.outputs.upload_url }}
+                    asset_path: build_dynamic_mt.7z
+                    asset_name: build_dynamic_mt.7z
+                    asset_content_type: application/x-7z-compressed
+            - name: Upload Release Asset build_static_mt
+                id: upload-release-asset
+                uses: actions/upload-release-asset@v1.0.1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    upload_url: ${{ steps.create_release.outputs.upload_url }}
+                    asset_path: build_static_mt.7z
+                    asset_name: build_static_mt.7z
+                    asset_content_type: application/x-7z-compressed
+            - name: Upload Release Asset build_static_mt
+                id: upload-release-asset
+                uses: actions/upload-release-asset@v1.0.1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    upload_url: ${{ steps.create_release.outputs.upload_url }}
+                    asset_path: build_static_mt.7z
+                    asset_name: build_static_mt.7z
+                    asset_content_type: application/x-7z-compressed
+            - name: Upload Release Asset build_static_md
+                id: upload-release-asset
+                uses: actions/upload-release-asset@v1.0.1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    upload_url: ${{ steps.create_release.outputs.upload_url }}
+                    asset_path: build_static_md.7z
+                    asset_name: build_static_md.7z
+                    asset_content_type: application/x-7z-compressed
