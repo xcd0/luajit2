@@ -26,7 +26,7 @@ jobs:
           echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "%GITHUB_ENV%"
           echo "%GITHUB_ENV%"
 
-          cat <<<EOF > build.sh
+          busybox cat <<<EOF > build.sh
           rm -rf build*
           mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
           cd src
