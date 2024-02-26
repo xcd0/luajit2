@@ -19,7 +19,7 @@ jobs:
     - run: |
         where msbuild
         msbuild -version
-        choco install -y --no-progress 7zip
+        choco install -y --no-progress busybox 7zip
         busybox
         busybox date '+%Y.%m.%d.%H.%M.%S'
         busybox uname -a
