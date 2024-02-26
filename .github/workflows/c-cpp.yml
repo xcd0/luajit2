@@ -25,7 +25,7 @@ jobs:
       with:
         vs-version: '[16.11,16.12)'
         vs-prerelease: false
-        msbuild-architecture: x64
+        #msbuild-architecture: x64
     - shell: cmd
       run: |
         # setup-msbuild でもダメだったので直接呼ぶ
