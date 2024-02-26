@@ -5,6 +5,15 @@ run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
 jobs:
   build:
     runs-on: windows-2019
+    strategy:
+      matrix:
+        config: [static, dynamic]
+        mode: [mt, md]
+        # matrixは以下の4つの組み合わせを生成します:
+        # - { config: 'static', mode: 'mt' }
+        # - { config: 'dynamic', mode: 'mt' }
+        # - { config: 'static', mode: 'md' }
+        # - { config: 'dynamic', mode: 'md' }
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -16,8 +25,13 @@ jobs:
 
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
+      with:
+        vs-version: '[16.11,16.12)'
+        vs-prerelease: false
+        msbuild-architecture: x64
     - shell: cmd
       run: |
+        # setup-msbuild でもダメだったので直接呼ぶ
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsx86_amd64.bat"
         msbuild -version
         choco install -y --no-progress busybox 7zip
@@ -27,42 +41,32 @@ jobs:
         busybox uname -a
         echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
         echo "$GITHUB_ENV"
-
         busybox echo "-------------------------------------"
-        busybox sed -i "s/; /\r/g" build.sh
-        busybox echo "-------------------------------------"
-        busybox echo bash -x build.sh
-        busybox bash -x build.sh static  mt
-        busybox bash -x build.sh dynamic mt
-        busybox bash -x build.sh static  md
-        busybox bash -x build.sh dynamic md
+        busybox bash -x build.sh ${{ matrix.config }} ${{ matrix.mode }}
         busybox echo "-------------------------------------"
 
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+      - name: Create release
+        if: ${{ matrix.config == 'static' && matrix.mode == 'mt' }} # リリースは一度だけ作成するため、一つの構成でのみ実行
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
   upload-assets:
     needs: build
     runs-on: windows-2019
-    strategy:
-      matrix:
-        asset: ['build_dynamic_mt.7z', 'build_static_mt.7z', 'build_dynamic_md.7z', 'build_static_md.7z']
     steps:
-      - name: Upload Release Asset ${{ matrix.asset }}
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          #upload_url: ${{ needs.build.outputs.upload_url }} # この行は前のジョブの出力を正しく参照していることを確認してください。
-          asset_path: ${{ matrix.asset }}
-          asset_name: ${{ matrix.asset }}
+          upload_url: ${{ needs.build.outputs.upload_url }}
+          asset_path: ${{ format('build_{0}_{1}.7z', needs.build.matrix.config, needs.build.matrix.mode) }}
+          asset_name: ${{ format('build_{0}_{1}.7z', needs.build.matrix.config, needs.build.matrix.mode) }}
           asset_content_type: application/x-7z-compressed
