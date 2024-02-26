@@ -46,20 +46,19 @@ jobs:
     needs: build
     runs-on: windows-2019
     steps:
-    - name: Create release
+    - name: Archive production artifacts
       id: create_release
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          name: dist-without-markdown
-          path: |
-            build_*.7z
+      uses: actions/upload-artifact@v4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        name: dist-without-markdown
+        path: |
+          build_*.7z
 
   upload-assets:
     needs: create-release
