@@ -42,8 +42,11 @@ jobs:
         busybox bash -x build.sh ${{ matrix.config }} ${{ matrix.mode }}
         busybox echo "-------------------------------------"
 
-    - name: Create release  # ここが新しいステップの開始点になるようにインデントを修正
-      if: ${{ matrix.config == 'static' && matrix.mode == 'mt' }}
+  create-release:
+    needs: build
+    runs-on: windows-2019
+    steps:
+    - name: Create release
       id: create_release
       uses: actions/create-release@v1.0.0
       env:
