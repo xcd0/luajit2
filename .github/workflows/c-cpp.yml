@@ -2,7 +2,7 @@ name: MSBuild
 
 on:
 	push:
-		branches: [ "v2.1-agentzh" ]
+		- '*'
 	tags:
 		- '*'
 
