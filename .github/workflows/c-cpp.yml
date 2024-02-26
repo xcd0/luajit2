@@ -16,7 +16,8 @@ jobs:
 
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
-    - run: |
+    - shell: cmd
+      run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsx86_amd64.bat"
         msbuild -version
         choco install -y --no-progress busybox 7zip
