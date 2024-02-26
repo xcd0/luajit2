@@ -1,10 +1,12 @@
 name: MSBuild
 on: [push]
-env:
-	echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
+run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
 defaults:
 	run:
 		shell: cmd
+		echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
+		echo "$GITHUB_ENV"
+
 jobs:
 	build:
 		runs-on: windows-2019
