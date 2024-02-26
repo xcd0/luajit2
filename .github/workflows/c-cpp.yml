@@ -45,8 +45,6 @@ jobs:
   create-release:
     needs: build
     runs-on: windows-2019
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }} # 出力を設定
     steps:
     - name: Archive production artifacts
       id: create_release
@@ -70,6 +68,8 @@ jobs:
   upload-assets:
     needs: create-release
     runs-on: windows-2019
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }} # 出力を設定
     steps:
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.1
