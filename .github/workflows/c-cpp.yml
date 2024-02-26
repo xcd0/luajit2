@@ -30,14 +30,14 @@ jobs:
           busybox rm -rf build*
           busybox mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
           busybox cd build/src
-          call msvcbuild.bat
+          msvcbuild.bat
           busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_mt
-          call msvcbuild.bat static
+          msvcbuild.bat static
           busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_mt
           busybox sed -i "s;/MT;/MD;g" msvcbuild.bat
-          call msvcbuild.bat
+          msvcbuild.bat
           busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_md
-          call msvcbuild.bat static
+          msvcbuild.bat static
           busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_md
           busybox cd ..
           7z a build_dynamic_mt.7z build_dynamic_mt/*
