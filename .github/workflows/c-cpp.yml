@@ -49,6 +49,7 @@ jobs:
     - name: check
       shell: cmd
       run: |
+        choco install -y --no-progress busybox
         busybox ls
     - name: Archive production artifacts
       id: create_release
