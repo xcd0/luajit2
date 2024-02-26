@@ -32,7 +32,10 @@ jobs:
         busybox sed -i "s/; /\r/g" build.sh
         busybox echo "-------------------------------------"
         busybox echo bash -x build.sh
-        busybox bash -x build.sh
+        busybox bash -x build.sh static  mt
+        busybox bash -x build.sh dynamic mt
+        busybox bash -x build.sh static  md
+        busybox bash -x build.sh dynamic md
         busybox echo "-------------------------------------"
 
 
