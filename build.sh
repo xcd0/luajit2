@@ -31,4 +31,4 @@ cd src
 cmd.exe /c msvcbuild.bat ${opt}
 cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../${out}
 cd ..
-z a ${out}.7z ${out}/*
+7z a ${out}.7z ${out}/*
