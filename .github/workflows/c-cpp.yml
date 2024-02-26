@@ -4,6 +4,7 @@ run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
 defaults:
     run:
         shell: cmd
+
 jobs:
     build:
         runs-on: windows-2019
@@ -28,6 +29,8 @@ jobs:
                 busybox uname -a
                 busybox pwd
                 msbuild -version
+                echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "%GITHUB_ENV%"
+                echo "%GITHUB_ENV%"
                 git submodule init
                 git submodule update --init --recursive
                 busybox rm -rf build*
