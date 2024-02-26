@@ -1,7 +1,7 @@
 name: MSBuild
 on: [push]
 env:
-	PATH: 'C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin'
+	echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
 defaults:
 	run:
 		shell: cmd
