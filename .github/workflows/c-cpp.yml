@@ -35,3 +35,53 @@ jobs:
         busybox bash -x build.sh
         busybox echo "-------------------------------------"
 
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset build_dynamic_mt
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build_dynamic_mt.7z
+        asset_name: build_dynamic_mt.7z
+        asset_content_type: application/x-7z-compressed
+    - name: Upload Release Asset build_static_mt
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build_static_mt.7z
+        asset_name: build_static_mt.7z
+        asset_content_type: application/x-7z-compressed
+    - name: Upload Release Asset build_static_mt
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build_static_mt.7z
+        asset_name: build_static_mt.7z
+        asset_content_type: application/x-7z-compressed
+    - name: Upload Release Asset build_static_md
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build_static_md.7z
+        asset_name: build_static_md.7z
+        asset_content_type: application/x-7z-compressed
