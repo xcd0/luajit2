@@ -58,7 +58,7 @@ jobs:
         prerelease: false
 
   upload-assets:
-    needs: build
+    needs: create-release
     runs-on: windows-2019
     steps:
       - name: Upload Release Asset
