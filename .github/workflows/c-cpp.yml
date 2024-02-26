@@ -1,8 +1,9 @@
 name: MSBuild
 on: [push]
 run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
-jobs: |
-	build: |
+jobs:
+	build-luajit:
+		name: build-luajit
 		runs-on: windows-2019
 		steps:
 		- name: Checkout
