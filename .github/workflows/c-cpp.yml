@@ -25,22 +25,24 @@ jobs:
           busybox uname -a
           echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "%GITHUB_ENV%"
           echo "%GITHUB_ENV%"
-          git submodule init
-          git submodule update --init --recursive
-          busybox rm -rf build*
-          busybox mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
-          busybox cd build/src
-          busybox ls
-          msvcbuild.bat
-          busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_mt
-          msvcbuild.bat static
-          busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_mt
-          busybox sed -i "s;/MT;/MD;g" msvcbuild.bat
-          msvcbuild.bat
-          busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_md
-          msvcbuild.bat static
-          busybox cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_md
-          busybox cd ..
+
+          cat <<-EOF > build.sh
+          rm -rf build*
+          mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
+          cd src
+          call msvcbuild.bat
+          cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_mt
+          call msvcbuild.bat static
+          cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_mt
+          sed -i "s;/MT;/MD;g" msvcbuild.bat
+          call msvcbuild.bat
+          cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_dynamic_md
+          call msvcbuild.bat static
+          cp -rf lua51.lib luajit.lib luajit.exe lua51.dll include include ../build_static_md
+          cd ..
+          EOF
+          busybox -x build.sh
+
           7z a build_dynamic_mt.7z build_dynamic_mt/*
           7z a build_static_mt.7z  build_static_mt/*
           7z a build_dynamic_md.7z build_dynamic_md/*
