@@ -1,10 +1,6 @@
 name: MSBuild
 
-on:
-	push:
-		- '*'
-	tags:
-		- '*'
+on: [push]
 
 env:
 	PATH: 'C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin'
