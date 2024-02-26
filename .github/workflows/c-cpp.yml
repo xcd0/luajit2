@@ -42,17 +42,17 @@ jobs:
         busybox bash -x build.sh ${{ matrix.config }} ${{ matrix.mode }}
         busybox echo "-------------------------------------"
 
-      - name: Create release
-        if: ${{ matrix.config == 'static' && matrix.mode == 'mt' }} # リリースは一度だけ作成するため、一つの構成でのみ実行
-        id: create_release
-        uses: actions/create-release@v1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+    - name: Create release  # ここが新しいステップの開始点になるようにインデントを修正
+      if: ${{ matrix.config == 'static' && matrix.mode == 'mt' }}
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
 
   upload-assets:
     needs: build
