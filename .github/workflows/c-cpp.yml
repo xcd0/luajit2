@@ -1,40 +1,4 @@
 
-name: MSBuild
-on: [push]
-run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
-jobs:
-  build:
-    runs-on: windows-2019
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        vs-version: '[16.11,16.12)'
-        vs-prerelease: false
-        msbuild-architecture: x64
-
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-    - shell: cmd
-      run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsx86_amd64.bat"
-        msbuild -version
-        choco install -y --no-progress busybox 7zip
-        busybox
-        busybox which msbuild
-        busybox date '+%Y.%m.%d.%H.%M.%S'
-        busybox uname -a
-        echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "$GITHUB_ENV"
-        echo "$GITHUB_ENV"
-
-        busybox echo "-------------------------------------"
-        busybox sed -i "s/; /\r/g" build.sh
-        busybox echo "-------------------------------------"
-        busybox echo bash -x build.sh
-        busybox bash -x build.sh
-        busybox echo "-------------------------------------"
-
     - name: Create release
       id: create_release
       uses: actions/create-release@v1.0.0
@@ -56,7 +20,7 @@ jobs:
         asset_name: build_dynamic_mt.7z
         asset_content_type: application/x-7z-compressed
     - name: Upload Release Asset build_static_mt
-      id: upload-release-asset_static_mt
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,18 +29,18 @@ jobs:
         asset_path: build_static_mt.7z
         asset_name: build_static_mt.7z
         asset_content_type: application/x-7z-compressed
-    - name: Upload Release Asset build_static_mt
-      id: upload-release-asset_static_mt
+    - name: Upload Release Asset build_dynamic_md
+      id: upload-release-asset_dynamic_md
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build_static_mt.7z
-        asset_name: build_static_mt.7z
+        asset_path: build_dynamic_md.7z
+        asset_name: build_dynamic_md.7z
         asset_content_type: application/x-7z-compressed
     - name: Upload Release Asset build_static_md
-      id: upload-release-asset_static_md
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
