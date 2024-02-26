@@ -46,7 +46,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Upload Release Asset build_dynamic_mt
-      id: upload-release-asset_static_mt
+      id: upload-release-asset_dynamic_mt
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
