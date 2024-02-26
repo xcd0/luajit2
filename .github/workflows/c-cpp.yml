@@ -16,17 +16,18 @@ jobs:
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
-
-      - run: |
+      - name: Build
+        shell: bash
+        run: |
           msbuild -version
-          choco install -y --no-progress busybox 7zip
+          choco install -y --no-progress 7zip
           busybox
           busybox date '+%Y.%m.%d.%H.%M.%S'
           busybox uname -a
           echo "PATH=C:\Program Files\Git\bin;C:\Windows\System32;C:\Windows;C:\ProgramData\Chocolatey\bin" >> "%GITHUB_ENV%"
           echo "%GITHUB_ENV%"
 
-          busybox cat <<<EOF > build.sh
+          cat <<<EOF > build.sh
           rm -rf build*
           mkdir -p build_dynamic_mt build_static_mt build_dynamic_md build_static_md
           cd src
