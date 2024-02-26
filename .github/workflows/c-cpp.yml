@@ -46,6 +46,10 @@ jobs:
     needs: build
     runs-on: windows-2019
     steps:
+    - name: check
+      shell: cmd
+      run: |
+        busybox ls
     - name: Archive production artifacts
       id: create_release
       uses: actions/upload-artifact@v4
