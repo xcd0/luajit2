@@ -11,7 +11,6 @@ jobs:
           fetch-depth: 0
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
-      - name: build
         with:
             # Version of Visual Studio to search; defaults to latest if not specified
             vs-version: '[16.11,16.12)' # optional
